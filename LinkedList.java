@@ -1,3 +1,5 @@
+//import java.lang.classfile.components.ClassPrinter;
+
 /**
  * Represents a list of Nodes. 
  */
@@ -54,8 +56,12 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		//// Replace the following statement with your code
-		return null;
+		Node current = this.first;
+		for (int i = 0; i < index; i++) {
+			//note that i need the previuos of index 
+			current = current.next;
+		}
+		return current;
 	}
 	
 	/**
@@ -78,7 +84,24 @@ public class LinkedList {
 	 *         if index is negative or greater than the list's size
 	 */
 	public void add(int index, MemoryBlock block) {
-		//// Write your code here
+		//making sure there are no exeptions 
+		if (index < 0 || index > size) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
+		if (index == 0){
+			addFirst(block);
+		}
+		else if (index == size){
+			addLast(block);
+		}
+		else {
+			Node newNode = new Node(block);
+			newNode.next = getNode(index);
+			getNode(index-1).next = newNode;
+			this.size++;
+		}
+		
 	}
 
 	/**
@@ -89,7 +112,10 @@ public class LinkedList {
 	 *        the given memory block
 	 */
 	public void addLast(MemoryBlock block) {
-		//// Write your code here
+		Node newNode = new Node(block);
+			this.last.next = newNode;
+			this.last = newNode;
+			this.size++;
 	}
 	
 	/**
@@ -100,7 +126,10 @@ public class LinkedList {
 	 *        the given memory block
 	 */
 	public void addFirst(MemoryBlock block) {
-		//// Write your code here
+		Node newNode = new Node(block);
+			newNode.next = this.first;
+			this.first = newNode;
+			this.size++;
 	}
 
 	/**
