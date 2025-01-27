@@ -1,4 +1,4 @@
-//import java.lang.classfile.components.ClassPrinter;
+
 
 /**
  * Represents a list of Nodes. 
@@ -56,7 +56,7 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		if (index==0){
+		else if (index==0){
 			return this.getFirst();
 		}
 		/*else if (index==(size-1)){
@@ -171,8 +171,7 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
-		//// Replace the following statement with your code
-		return null;
+		return this.getNode(index).block;
 	}	
 
 	/**
@@ -183,7 +182,19 @@ public class LinkedList {
 	 * @return the index of the block, or -1 if the block is not in this list
 	 */
 	public int indexOf(MemoryBlock block) {
-		//// Replace the following statement with your code
+		if ((this.first==null)||(block==null)){
+			return -1;
+		}
+		
+		Node firstNode = this.first;
+		for (int i = 0; i < size; i++) {
+			if (firstNode.block.equals(block)){
+				return i;
+			}
+			else {
+				firstNode = firstNode.next;
+			}
+		}
 		return -1;
 	}
 
@@ -230,7 +241,12 @@ public class LinkedList {
 	 * A textual representation of this list, for debugging.
 	 */
 	public String toString() {
-		//// Replace the following statement with your code
-		return "";
+		String s = "";
+		Node current = first;
+		while (current!=null){
+			s += current.block + "";
+			current = current.next;
+		}
+		return s;
 	}
 }
