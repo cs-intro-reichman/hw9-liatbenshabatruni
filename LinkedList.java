@@ -205,6 +205,10 @@ public class LinkedList {
 	 *        the node that will be removed from this list
 	 */
 	public void remove(Node node) {
+		if (indexOf(node.block)==-1) {
+			throw new IllegalArgumentException(
+					"Node not found in the list.");
+		}
 		remove(indexOf(node.block));
 	}
 
@@ -222,6 +226,9 @@ public class LinkedList {
 		}
 		else if (index==0) {
 			this.first = first.next;
+			if (this.size==1){
+				this.last=null;
+			}
 			size--;
 		}
 		else if (index==size-1) {
