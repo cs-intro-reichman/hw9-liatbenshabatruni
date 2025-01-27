@@ -52,17 +52,17 @@ public class LinkedList {
 	 * @return the node at the given index
 	 */		
 	public Node getNode(int index) {
-		if (index < 0 || index > size) {
+		if (index < 0 || index >= size) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
 		if (index==0){
-			return this.first;
+			return this.getFirst();
 		}
-		else if (index==size){
+		/*else if (index==(size-1)){
 			return this.last;
-		}
-		else{
+		}*/
+		else {
 			Node current = this.first;
 		for (int i = 0; i < index; i++) {
 			//note that i need the previuos of index 
