@@ -220,9 +220,18 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public void remove(int index) {
-		if (index < 0 || index > size) {
+		if (size==1){
+			this.first=null;
+			this.last= null;
+			size =0;
+		}
+		else if (index < -1 || index > size) {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
+		}
+		else if (indexOf(getNode(index).block)==-1) {
+			throw new IllegalArgumentException(
+					"Node not found in the list.");
 		}
 		else if (index==0) {
 			this.first = first.next;
