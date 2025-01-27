@@ -205,25 +205,7 @@ public class LinkedList {
 	 *        the node that will be removed from this list
 	 */
 	public void remove(Node node) {
-		if (indexOf(node.block)==-1){
-			return;
-		}
-		else if (indexOf(node.block)==0){
-			this.first = first.next;
-			size--;
-		}
-		else if ((indexOf(node.block)==(size-1))){
-			getNode(size-2).next=null;
-			this.last = getNode(size-2); 
-			size--;
-		}
-		else {
-			int prev = indexOf(node.block)-1;
-			int next = indexOf(node.block)+1;
-			getNode(prev).next=getNode(next);
-			size--;
-		}
-		
+		remove(indexOf(node.block));
 	}
 
 	/**
@@ -234,7 +216,24 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public void remove(int index) {
-		//// Write your code here
+		if (index < 0 || index > size) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
+		else if (index==0) {
+			this.first = first.next;
+			size--;
+		}
+		else if (index==size-1) {
+			getNode(index-1).next=null;
+			this.last = getNode(index-1); 
+			size--;
+		}
+		else {
+			getNode(index-1).next=getNode(index+1);
+			size--;
+		}
+		
 	}
 
 	/**
