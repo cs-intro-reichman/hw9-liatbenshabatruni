@@ -56,12 +56,21 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		Node current = this.first;
+		if (index==0){
+			return this.first;
+		}
+		else if (index==size){
+			return this.last;
+		}
+		else{
+			Node current = this.first;
 		for (int i = 0; i < index; i++) {
 			//note that i need the previuos of index 
 			current = current.next;
 		}
 		return current;
+		}
+		
 	}
 	
 	/**
