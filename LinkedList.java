@@ -205,11 +205,26 @@ public class LinkedList {
 	 *        the node that will be removed from this list
 	 */
 	public void remove(Node node) {
-		if (indexOf(node.block)==-1) {
-			throw new IllegalArgumentException(
-					"Node not found in the list.");
+		int indexOfNode = indexOf(node.block);
+		if (indexOfNode == -1) {
+			throw new IllegalArgumentException("Node not found in the list.");
 		}
-		remove(indexOf(node.block));
+
+		if (indexOfNode == 0) {
+			first = first.next;
+			if(size == 1) {
+				last = null;
+			}
+		}
+		else {
+			Node prev = getNode(indexOfNode - 1);
+			prev.next = node.next;
+			if (node == last) {
+				last = prev;      
+			}
+		}
+
+		size--;
 	}
 
 	/**
@@ -220,36 +235,13 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public void remove(int index) {
-		if (size==1){
-			this.first=null;
-			this.last= null;
-			size =0;
-		}
-		else if (index < -1 || index > size) {
+		if(index < 0 || index >= size) {
 			throw new IllegalArgumentException(
-					"index must be between 0 and size");
+				"index must be between 0 and size");
 		}
-		else if (indexOf(getNode(index).block)==-1) {
-			throw new IllegalArgumentException(
-					"Node not found in the list.");
-		}
-		else if (index==0) {
-			this.first = first.next;
-			if (this.size==1){
-				this.last=null;
-			}
-			size--;
-		}
-		else if (index==size-1) {
-			getNode(index-1).next=null;
-			this.last = getNode(index-1); 
-			size--;
-		}
-		else {
-			getNode(index-1).next=getNode(index+1);
-			size--;
-		}
-		
+
+		Node nodeOfIndex = getNode(index);
+		remove(nodeOfIndex);
 	}
 
 	/**
@@ -260,8 +252,12 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		//// Write your code here
-	}	
+		if(indexOf(block) == -1) {
+			throw new IllegalArgumentException(
+				"index must be between 0 and size");
+		}
+		remove(indexOf(block));
+	}		
 
 	/**
 	 * Returns an iterator over this list, starting with the first element.
