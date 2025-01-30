@@ -63,12 +63,10 @@ public class MemorySpace {
 		}
 
 		ListIterator freeIterator = freeList.iterator();
-
 		//using methods from ListIterator
 		//has next => Checks if this iterator has more nodes to process
 		while (freeIterator.hasNext()) {
 			MemoryBlock current = freeIterator.next();
-	
 			if (current.length == length) {
 				allocatedList.addLast(current);
 				//now will remove current from free list 
@@ -96,6 +94,9 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
+		if(freeList.getSize()==0){
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
 		if (allocatedList.getSize() == 0) {
 			throw new IllegalArgumentException("size must be bigger than 0");
 		}
@@ -103,7 +104,7 @@ public class MemorySpace {
 		while (current != null) {
 			MemoryBlock alloc = current.block;
 			if (alloc.baseAddress == address) {
-				allocatedList.remove(alloc);
+				allocatedList.remove(current);
 				freeList.addLast(alloc);
 				return;
 			}
