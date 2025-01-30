@@ -96,8 +96,24 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-	//// Write your code here	
-	}
+		// checking if the allocatedlist is empty
+		if (allocatedList.getSize() == 0) {
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
+		// creating cursor
+		Node fNode = allocatedList.getFirst();
+		// creating a loop until the end of the list (null node)
+		while(fNode != null) {
+			MemoryBlock allocatedNode = fNode .block;
+			// checking if the baseaddress is exist
+			if(allocatedNode.baseAddress == address) {
+				allocatedList.remove(allocatedNode);
+				freeList.addLast(allocatedNode);
+				return;
+			}
+			fNode = fNode .next;
+			}
+		}
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
@@ -113,6 +129,23 @@ public class MemorySpace {
 	 * In this implementation Malloc does not call defrag.
 	 */
 	public void defrag() {
-		//// Write your code here
+		ListIterator firstIt = freeList.iterator();
+		ListIterator secondIt = freeList.iterator();
+		// creating a double loop until the end of the list (null node)
+		while(firstIt.hasNext()){
+			while(secondIt.hasNext()){
+				int baseAddress = firstIt.current.block.baseAddress;
+				int length = firstIt.current.block.length;
+				// cheking if length and basaaddress equal the baseaddres of the next one
+				if (length + baseAddress == secondIt.current.block.baseAddress){
+					firstIt.current.block.length += secondIt.current.block.length;
+					freeList.remove(secondIt.current.block);
+					secondIt = freeList.iterator();
+				}
+				secondIt.next();
+			}
+			secondIt = freeList.iterator();
+			firstIt.next();
+		}
 	}
 }
