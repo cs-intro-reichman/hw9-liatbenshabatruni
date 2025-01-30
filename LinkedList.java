@@ -73,6 +73,7 @@ public class LinkedList {
 		
 	}
 	
+	
 	/**
 	 * Creates a new Node object that points to the given memory block, 
 	 * and inserts the node at the given index in this list.
@@ -98,19 +99,40 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		if (index == 0){
-			addFirst(block);
+		//creating a new node for the given block
+    	Node newNode = new Node(block);
+		if (index == 0) {
+			//point the new node to the current first node
+			newNode.next = first;  
+			//update first to be the new node
+			first = newNode;       
+			// if the list was empty, both first and last will point to the new node
+			if (size == 0) {
+				last = newNode;
+			}
+			//updating the size after adding
+			size++; 
+			return;
 		}
-		else if (index == size){
-			addLast(block);
+		//adding to the end of the list (index == size)
+		if (index == size) {
+			//if the list is empty, set both first and last to the new node
+			if (size == 0) {
+				first = newNode;
+				last = first;
+			} else {
+				last.next = newNode;  
+				last = newNode;       
+			}
+			//updating the size after adding
+			size++;  
+			return;
 		}
-		else {
-			Node newNode = new Node(block);
-			newNode.next = getNode(index);
-			getNode(index-1).next = newNode;
-			this.size++;
-		}
-		
+		//adding to the middle the middle of the list
+		Node previousNode = getNode(index - 1);  
+		newNode.next = previousNode.next;        
+		previousNode.next = newNode;             
+		size++;  //updating the size after adding
 	}
 
 	/**
@@ -121,19 +143,7 @@ public class LinkedList {
 	 *        the given memory block
 	 */
 	public void addLast(MemoryBlock block) {
-		Node newNode = new Node(block);
-		if (block==null){
-			return;
-		}
-
-		if (this.last==null){
-			addFirst(block);
-		}
-		else {
-			this.last.next = newNode;
-			this.last = newNode;
-			this.size++;
-		}
+		add(size, block);
 	}
 	
 	/**
@@ -144,21 +154,7 @@ public class LinkedList {
 	 *        the given memory block
 	 */
 	public void addFirst(MemoryBlock block) {
-		Node newNode = new Node(block);
-		if (block==null){
-			return;
-		}
-		if (this.first==null){
-			this.first = newNode;
-			this.size++;
-			this.last = this.first;
-		}
-		else {
-			newNode.next = this.first;
-			this.first = newNode;
-			this.size++;
-		}
-			
+		add(0, block);
 	}
 
 	/**
@@ -171,7 +167,12 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
-		return this.getNode(index).block;
+		//validate the index
+		if (index < 0 || index >= size) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
+		return this.getNode(index).block; 
 	}	
 
 	/**
@@ -182,22 +183,13 @@ public class LinkedList {
 	 * @return the index of the block, or -1 if the block is not in this list
 	 */
 	public int indexOf(MemoryBlock block) {
-		if ((this.first==null)||(block==null)){
-			return -1;
-		}
-		
-		Node firstNode = this.first;
-		for (int i = 0; i < size; i++) {
-			if (firstNode.block.equals(block)){
+		for(int i = 0; i < size; i++) {
+			if(getBlock(i).equals(block)) {
 				return i;
-			}
-			else {
-				firstNode = firstNode.next;
 			}
 		}
 		return -1;
 	}
-
 	/**
 	 * Removes the given node from this list.	
 	 * 
