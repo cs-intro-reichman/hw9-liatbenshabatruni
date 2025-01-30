@@ -61,7 +61,7 @@ public class MemorySpace {
 		if (length <= 0) {
 			throw new IllegalArgumentException("The Length has to be positive");
 		}
-	
+
 		ListIterator freeIterator = freeList.iterator();
 
 		//using methods from ListIterator
@@ -73,14 +73,14 @@ public class MemorySpace {
 				allocatedList.addLast(current);
 				//now will remove current from free list 
 				freeList.remove(current);
-				return (current.baseAddress);
+				return (allocatedList.getLast().block.baseAddress);
 			} 
 			else if (current.length > length) {
 				MemoryBlock block = new MemoryBlock(current.baseAddress, length);
 				allocatedList.addLast(block);
 				current.baseAddress += length;
 				current.length -= length;
-				return block.baseAddress;
+				return (block.baseAddress);
 			}
 		}
 	
