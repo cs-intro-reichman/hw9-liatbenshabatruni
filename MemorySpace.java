@@ -57,33 +57,41 @@ public class MemorySpace {
 	 *        the length (in words) of the memory block that has to be allocated
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
-	public int malloc(int length) {		
-		if (length <= 0) {
-			throw new IllegalArgumentException("The Length has to be positive");
-		}
+	public int malloc(int length) {	
+		// validate the length
+    if (length <= 0) {
+        throw new IllegalArgumentException("The Length has to be positive");
+    }
 
-		ListIterator freeIterator = freeList.iterator();
-		//using methods from ListIterator
-		//has next => Checks if this iterator has more nodes to process
-		while (freeIterator.hasNext()) {
-			MemoryBlock current = freeIterator.next();
-			if (current.length == length) {
-				allocatedList.addLast(current);
-				//now will remove current from free list 
-				freeList.remove(current);
-				return (allocatedList.getLast().block.baseAddress);
-			} 
-			else if (current.length > length) {
-				MemoryBlock block = new MemoryBlock(current.baseAddress, length);
-				allocatedList.addLast(block);
-				current.baseAddress += length;
-				current.length -= length;
-				return (block.baseAddress);
-			}
+    // Iterate over freeList to find a matching block
+    ListIterator freeIterator = freeList.iterator();
+    while (freeIterator.hasNext()) {
+        MemoryBlock current = freeIterator.next();
+        
+        // now look for equal or larger match (block)
+        if (current.length == length) {
+            // add the block to the allocated list
+            allocatedList.addLast(current);
+			// after allocating, remove from freeList
+            freeList.remove(current); 
+			// now return the base address of the allocated block 
+            return current.baseAddress;  
 		}
-	
-		return -1;
-	}
+        else if (current.length > length) {
+            // if the block is larger than what i need
+            MemoryBlock allocatedBlock = new MemoryBlock(current.baseAddress, length);
+            allocatedList.addLast(allocatedBlock);
+
+            // update the free block's base address and length 
+            current.baseAddress += length;
+            current.length -= length;
+            return (allocatedBlock.baseAddress);
+        }
+    }
+    // If no mach block is found return -1
+    return -1;
+}
+		
 
 	/**
 	 * Frees the memory block whose base address equals the given address.
@@ -94,22 +102,7 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		if(freeList.getSize()==0){
-			throw new IllegalArgumentException("index must be between 0 and size");
-		}
-		if (allocatedList.getSize() == 0) {
-			throw new IllegalArgumentException("size must be bigger than 0");
-		}
-		Node current = allocatedList.getFirst();
-		while (current != null) {
-			MemoryBlock alloc = current.block;
-			if (alloc.baseAddress == address) {
-				allocatedList.remove(current);
-				freeList.addLast(alloc);
-				return;
-			}
-		current = current.next;
-		}
+	//// Write your code here	
 	}
 	
 	/**
