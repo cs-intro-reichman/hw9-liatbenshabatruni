@@ -58,32 +58,31 @@ public class MemorySpace {
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
 	public int malloc(int length) {	
-		
-		//creating a cursor 
-		Node current = freeList.getFirst();
-		int baseAddress;
-
-		//making a loop until getting to the last node (that will be null)
-		while (current != null) {
-			//usecase when the length is bigger than we need
-			if (current.block.length >= length) {
-				baseAddress = current.block.baseAddress;
-				MemoryBlock newBlock = new MemoryBlock(baseAddress, length);
-				allocatedList.add(allocatedList.getSize(), newBlock);
-				// usecase when the length fit perfectly
-				if (current.block.length == length) {
-					freeList.remove(current);
-				} 
-				else {
-					current.block.baseAddress += length;
-					current.block.length -= length;
-				}
-				return baseAddress;
-			}
-			current = current.next;
-		}
-		//if there is no fit
-		return -1;
+	// first node in the free list
+    Node currentNode = freeList.getFirst();
+    // go over all the nodes in the free list
+    for (int i = 0; i < freeList.getSize(); i++) {
+        MemoryBlock currentBlock = currentNode.block;
+        // checking if the current block has enough space for the length we need 
+        if (currentBlock.length >= length) {
+            // allocate a new block of memory from the free block
+            MemoryBlock allocatedBlock = new MemoryBlock(currentBlock.baseAddress, length);
+            allocatedList.addLast(allocatedBlock);
+            // if the block size matches the requested length, remove it from the free list
+            if (currentBlock.length == length) {
+                freeList.remove(currentBlock);
+            } else {
+                // Otherwise, update the free block to reflect the new size after allocation
+                currentBlock.baseAddress += length;
+                currentBlock.length -= length;
+            }
+            // return the base address of the new allocated block
+            return allocatedBlock.baseAddress;
+        }
+        currentNode = currentNode.next;
+    }
+    // If no matching block:
+    return -1;
 }
 		
 
