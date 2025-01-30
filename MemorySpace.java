@@ -58,38 +58,32 @@ public class MemorySpace {
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
 	public int malloc(int length) {	
-		// validate the length
-    if (length <= 0) {
-        throw new IllegalArgumentException("The Length has to be positive");
-    }
+		
+		//creating a cursor 
+		Node current = freeList.getFirst();
+		int baseAddress;
 
-    // Iterate over freeList to find a matching block
-    ListIterator freeIterator = freeList.iterator();
-    while (freeIterator.hasNext()) {
-        MemoryBlock current = freeIterator.next();
-        
-        // now look for equal or larger match (block)
-        if (current.length == length) {
-            // add the block to the allocated list
-            allocatedList.addLast(current);
-			// after allocating, remove from freeList
-            freeList.remove(current); 
-			// now return the base address of the allocated block 
-            return current.baseAddress;  
+		//making a loop until getting to the last node (that will be null)
+		while (current != null) {
+			//usecase when the length is bigger than we need
+			if (current.block.length >= length) {
+				baseAddress = current.block.baseAddress;
+				MemoryBlock newBlock = new MemoryBlock(baseAddress, length);
+				allocatedList.add(allocatedList.getSize(), newBlock);
+				// usecase when the length fit perfectly
+				if (current.block.length == length) {
+					freeList.remove(current);
+				} 
+				else {
+					current.block.baseAddress += length;
+					current.block.length -= length;
+				}
+				return baseAddress;
+			}
+			current = current.next;
 		}
-        else if (current.length > length) {
-            // if the block is larger than what i need
-            MemoryBlock allocatedBlock = new MemoryBlock(current.baseAddress, length);
-            allocatedList.addLast(allocatedBlock);
-
-            // update the free block's base address and length 
-            current.baseAddress += length;
-            current.length -= length;
-            return (allocatedBlock.baseAddress);
-        }
-    }
-    // If no mach block is found return -1
-    return -1;
+		//if there is no fit
+		return -1;
 }
 		
 
